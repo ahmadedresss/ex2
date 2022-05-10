@@ -94,3 +94,4 @@ int Player::getAttackStrength()
 {
     return m_force + m_level;
 }
+ 
