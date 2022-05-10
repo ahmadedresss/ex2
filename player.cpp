@@ -1,12 +1,15 @@
 #include "Player.h"
-
+#include "utilities.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 
 #define DE_LEVEL 1
 #define FORCE 5
 #define DE_HP 100
 
 
-player::player(const char* name ,int max_hp , int force)
+Player::Player(const char* name ,int max_hp , int force)
 {
     m_name=name;
     m_maxHP=max_hp;
@@ -14,30 +17,29 @@ player::player(const char* name ,int max_hp , int force)
     m_level=DE_LEVEL;
     m_HP=max_hp;
     m_coins=0;
-};
+}
 
-void player::print_info ()const
+void Player::printInfo ()const
 {
     printPlayerInfo(m_name, m_level, m_force, m_maxHP, m_coins);
-
 }
 
-void player::levelUp()
+void Player::levelUp()
 {
-   m_level+=1;
+    m_level+=1;
 }
 
-int player::getLevel()const
+int Player::getLevel()const
 {
-   return m_level;
+    return m_level;
 }
 
-void player::buff(int add_force)
+void Player::buff(int add_force)
 {
     m_force+=add_force;
 }
 
-void player::heal(int add_hp)
+void Player::heal(int add_hp)
 {
     m_HP+=add_hp;
     if (m_HP > DE_HP)
@@ -46,7 +48,7 @@ void player::heal(int add_hp)
     }
 }
 
-void player::damage(int damage_par)
+void Player::damage(int damage_par)
 {
     m_HP-=damage_par;
     if (m_HP < 0)
@@ -55,7 +57,7 @@ void player::damage(int damage_par)
     }
 }
 
-bool player::isKnockedOut() const
+bool Player::isKnockedOut() const
 {
     if (m_HP==0)
     {
@@ -72,13 +74,12 @@ void Player::addCoins(int addedCoins)
     m_coins += addedCoins;
 }
 
-bool player::pay(int coinsToPay)
+bool Player::pay(int coinsToPay)
 {
     if(coinsToPay>0)
     {
         if(m_coins - coinsToPay <0)
         {
-            cout<<"Not enough coins"<<endl;
             return false;
         }
         else
@@ -90,8 +91,7 @@ bool player::pay(int coinsToPay)
     return true;
 }
 
-int Player::getAttackStrength()
+int Player::getAttackStrength() const
 {
     return m_force + m_level;
 }
- 
