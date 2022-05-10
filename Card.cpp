@@ -9,41 +9,46 @@ Card::Card(CardType type, const CardStats &stats)
 
 void Card::applyEncounter(Player& player) const
 {
-    if( m_effect == CardType::Battle) {
+    if( m_effect == CardType::Battle)
+    {
         int attack = player.getAttackStrength();
-        if (attack >= m_stats.force) {
+        if (attack >= m_stats.force)
+        {
             player.levelUp();
             player.addCoins(m_stats.force);
             return;
-
-        } else {
-            player.damge(m_stats.force);
+        }
+        else
+        {
+            player.damage(m_stats.force);
             return;
-
-        }
-        if (m_effect == CardType::Heal) {
-            if (player.pay(m_stats.cost)) {
-                player.heal(m_stats.heal);
-                return;
-
-            }
-        }
-        if (m_effect == CardType::Buff) {
-            if (player.pay(m_stats.cost)) {
-                player.buff(m_stats.heal);
-                return;
-
-            }
-        }
-        if (m_effect == CardType::Treasure) {
-            player.addCoins(m_stats.loot);
-            return;
-
-
         }
     }
+    if (m_effect == CardType::Heal)
+    {
+        if (player.pay(m_stats.cost))
+        {
+            player.heal(m_stats.heal);
+            return;
+        }
+    }
+    if (m_effect == CardType::Buff)
+    {
+        if (player.pay(m_stats.cost))
+        {
+            player.buff(m_stats.heal);
+            return;
+        }
+    }
+    if (m_effect == CardType::Treasure)
+    {
+        player.addCoins(m_stats.loot);
+        return;
+    }
 }
-void Card::printInfo() const {
+
+void Card::printInfo() const
+{
     if (m_effect == CardType::Battle)
     {
         printBattleCardInfo(m_stats);
@@ -57,12 +62,12 @@ void Card::printInfo() const {
     if (m_effect == CardType::Heal)
     {
         printHealCardInfo(m_stats);
-        return;        
+        return;
     }
     if (m_effect == CardType::Treasure)
     {
         printTreasureCardInfo(m_stats);
-        return;        
-        
+        return;
+
     }
 }
