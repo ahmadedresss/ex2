@@ -21,11 +21,13 @@ Player::Player(const char* name ,int max_hp , int force)
 
 void Player::printInfo ()const
 {
-    printPlayerInfo(m_name, m_level, m_force, m_maxHP, m_coins);
+    printPlayerInfo(m_name, m_level, m_force, m_HP, m_coins);
 }
 
 void Player::levelUp()
 {
+    if(m_level>=10)
+        return;
     m_level+=1;
 }
 
@@ -42,24 +44,30 @@ void Player::buff(int add_force)
 void Player::heal(int add_hp)
 {
     m_HP+=add_hp;
-    if (m_HP > DE_HP)
+    if (m_HP > m_maxHP)
     {
-        m_HP=DE_HP;
+        m_HP=m_maxHP;
     }
 }
 
 void Player::damage(int damage_par)
 {
-    m_HP-=damage_par;
-    if (m_HP < 0)
+    if(damage_par<=0)
+    {
+        return;
+    }
+    if(m_HP<=damage_par)
     {
         m_HP=0;
+
     }
+    else
+        m_HP-=damage_par;
 }
 
 bool Player::isKnockedOut() const
 {
-    if (m_HP==0)
+    if (m_HP<=0)
     {
         return true;
     }
@@ -76,19 +84,17 @@ void Player::addCoins(int addedCoins)
 
 bool Player::pay(int coinsToPay)
 {
-    if(coinsToPay>0)
+    if(coinsToPay>=0)
     {
         if(m_coins - coinsToPay <0)
         {
             return false;
         }
-        else
-        {
+
             m_coins -= coinsToPay;
             return true;
-        }
     }
-    return true;
+    return false;
 }
 
 int Player::getAttackStrength() const
