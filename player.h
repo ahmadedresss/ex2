@@ -65,6 +65,7 @@ public:
     /*
      * Prints the player info:
     */
+
 private:
     const char * m_name;
     int m_level; //the level of the player
