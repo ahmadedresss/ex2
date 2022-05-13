@@ -29,6 +29,11 @@ public:
     */
     Mtmchkin(const char* playerName, const Card* cardsArray, int numOfCards);
 
+    ~Mtmchkin();
+
+    Mtmchkin& operator=(Mtmchkin &m);
+
+    Mtmchkin(const Mtmchkin& tmp);
 
     /*
      * Play the next Card - according to the instruction in the exercise document
@@ -57,7 +62,7 @@ public:
      */
     GameStatus getGameStatus() const;
 
-    //TODO: complete the Mtmchkin class.
+
 
 private:
     //TODO: complete the Mtmchkin class.
