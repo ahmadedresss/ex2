@@ -15,12 +15,14 @@ void Card::applyEncounter(Player& player) const
         if (attack >= m_stats.force)
         {
             player.levelUp();
-            player.addCoins(m_stats.force);
+            player.addCoins(m_stats.loot);
+            printBattleResult(true);
             return;
         }
         else
         {
-            player.damage(m_stats.force);
+            player.damage(m_stats.hpLossOnDefeat);
+            printBattleResult(false);
             return;
         }
     }
@@ -36,7 +38,7 @@ void Card::applyEncounter(Player& player) const
     {
         if (player.pay(m_stats.cost))
         {
-            player.buff(m_stats.heal);
+            player.buff(m_stats.buff);
             return;
         }
     }
