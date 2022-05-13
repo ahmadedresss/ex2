@@ -29,11 +29,11 @@ public:
     */
     Mtmchkin(const char* playerName, const Card* cardsArray, int numOfCards);
 
-    ~Mtmchkin();
+   // ~Mtmchkin();
 
-    Mtmchkin& operator=(Mtmchkin &m);
+    Mtmchkin& operator=(const Mtmchkin &m)=delete;
 
-    Mtmchkin(const Mtmchkin& tmp);
+    Mtmchkin(const Mtmchkin& tmp)=delete;
 
     /*
      * Play the next Card - according to the instruction in the exercise document
