@@ -29,11 +29,11 @@ public:
     */
     Mtmchkin(const char* playerName, const Card* cardsArray, int numOfCards);
 
-   // ~Mtmchkin();
+    Mtmchkin(const Mtmchkin& copy);
 
-    Mtmchkin& operator=(const Mtmchkin &m)=delete;
+    ~Mtmchkin();
 
-    Mtmchkin(const Mtmchkin& tmp)=delete;
+    Mtmchkin& operator=(const Mtmchkin& copy);
 
     /*
      * Play the next Card - according to the instruction in the exercise document
@@ -54,6 +54,8 @@ public:
     bool isOver() const;
 
 
+
+
     /*
      *  Get the status of the game:
      *
@@ -66,8 +68,8 @@ public:
 
 private:
     //TODO: complete the Mtmchkin class.
-    const char* playerName;
     const Card *cardsArray;
+    Card* m_temp;
     int m_numOfCards;
     GameStatus m_status;
     int m_index;
