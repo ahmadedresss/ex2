@@ -27,7 +27,9 @@ void Player::printInfo ()const
 void Player::levelUp()
 {
     if(m_level>=10)
+    {
         return;
+    }
     m_level+=1;
 }
 
@@ -38,11 +40,19 @@ int Player::getLevel()const
 
 void Player::buff(int add_force)
 {
+    if(add_force<0)
+    {
+        return;
+    }
     m_force+=add_force;
 }
 
 void Player::heal(int add_hp)
 {
+    if(add_hp<=0)
+    {
+    return;
+    }
     m_HP+=add_hp;
     if (m_HP > m_maxHP)
     {
@@ -63,6 +73,10 @@ void Player::damage(int damage_par)
     }
     else
         m_HP-=damage_par;
+
+    if(m_HP<0)
+        m_HP=0;
+
 }
 
 bool Player::isKnockedOut() const
@@ -79,6 +93,10 @@ bool Player::isKnockedOut() const
 
 void Player::addCoins(int addedCoins)
 {
+    if(addedCoins<=0)
+    {
+        return;
+    }
     m_coins += addedCoins;
 }
 
