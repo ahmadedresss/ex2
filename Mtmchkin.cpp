@@ -5,7 +5,7 @@
 #include <iostream>
 using std::cout;
 using std::endl;
-
+ 
 Mtmchkin::Mtmchkin(const char *playerName, const Card *cardsArray, int numOfCards):m_player(playerName)
 {
     this->playerName=playerName;
