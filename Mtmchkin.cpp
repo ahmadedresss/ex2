@@ -1,94 +1,92 @@
+
+#include "Player.h"
 #include "Mtmchkin.h"
+#include "utilities.h"
+#include "Card.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 
-Mtmchkin::Mtmchkin(const char* playerName, const Card* cardsArray, int numOfCards) :
-        m_gameStatus(GameStatus::MidGame), m_currentCard(INDEX_OF_FIRST_CARD), m_amountOfCards(numOfCards),
-        m_player(playerName), m_cardsArr(copyCardsArray(cardsArray, numOfCards))
+Mtmchkin::Mtmchkin(const char *playerName, const Card *cardsArray, int numOfCards):m_player(playerName)
 {
-
+    this->m_numOfCards=numOfCards;
+    this->m_status=GameStatus::MidGame;
+    this->m_index=0;
+     m_temp = new Card[numOfCards];
+    for (int i = 0; i < numOfCards; i++)
+    {
+        m_temp[i] = cardsArray[i];
+    }
 }
 
 
-Mtmchkin::Mtmchkin(const Mtmchkin& m) : m_gameStatus(m.m_gameStatus), m_currentCard(m.m_currentCard),
-                                        m_amountOfCards(m.m_amountOfCards),m_player(m.m_player),
-                                        m_cardsArr(copyCardsArray(m.m_cardsArr, m.m_amountOfCards))
+Mtmchkin& Mtmchkin::operator=(const Mtmchkin& copy)
 {
+    delete[] m_temp;
+    m_temp=new Card[copy.m_numOfCards];
+    for (int i = 0; i < copy.m_numOfCards; i++)
+    {
+        m_temp[i] = cardsArray[i];
+    }
+    this->m_numOfCards=copy.m_numOfCards;
+    this->m_status=copy.m_status;
+    this->m_index=copy.m_index;
+    this->m_player=copy.m_player;
+    return*this;
+}
 
+Mtmchkin::Mtmchkin(const Mtmchkin& copy): m_player(copy.m_player)
+{
+    this->m_numOfCards=copy.m_numOfCards;
+    this->m_status=copy.m_status;
+    this->m_index=copy.m_index;
+    m_temp=new Card[copy.m_numOfCards];
+    for (int i = 0; i < copy.m_numOfCards; i++)
+    {
+        m_temp[i] = cardsArray[i];
+    }
 }
 
 
 Mtmchkin::~Mtmchkin()
 {
-    delete[] this->m_cardsArr;
+    delete[] m_temp;
 }
-
-
-Mtmchkin& Mtmchkin:: operator=(Mtmchkin &m)
-{
-    if (this == &m)
-    {
-        return *this;
-    }
-
-    delete[] this->m_cardsArr;
-    this->m_gameStatus = m.m_gameStatus;
-    this->m_currentCard = m.m_currentCard;
-    this->m_amountOfCards = m.m_amountOfCards;
-    this->m_player = m.m_player;
-    this->m_cardsArr= copyCardsArray(m.m_cardsArr, m.m_amountOfCards);
-    return *this;
-}
-
-
-GameStatus Mtmchkin::getGameStatus() const
-{
-    return this->m_gameStatus;
-}
-
 
 void Mtmchkin::playNextCard()
 {
-    if(this->m_gameStatus != GameStatus::MidGame)
+    Card current_card=m_temp[m_index];
+    current_card.printInfo();
+    current_card.applyEncounter(m_player);
+
+
+    if(m_player.isKnockedOut())
     {
-        return;
+        this->m_status=GameStatus::Loss;
     }
-    this->m_cardsArr[this->m_currentCard].printInfo();
-    this->m_cardsArr[this->m_currentCard].applyEncounter(this->m_player);
-    this->m_player.printInfo();
-    if(this->m_player.getLevel() == 10)
+    if(m_player.getLevel()==10)
     {
-        this->m_gameStatus= GameStatus::Win;
+        this->m_status=GameStatus::Win;
     }
-    if(this->m_player.isKnockedOut())
+
+    m_player.printInfo();
+
+    if(++m_index == this->m_numOfCards)
     {
-        this->m_gameStatus= GameStatus::Loss;
+        m_index=0;
     }
-    if(this->m_currentCard == this->m_amountOfCards -1)
-    {
-        this->m_currentCard= INDEX_OF_FIRST_CARD;
-    }
-    else
-    {
-        ++this->m_currentCard;
-    }
+   
 }
-
-
 bool Mtmchkin::isOver() const
 {
-    if(this->m_gameStatus == GameStatus::Loss || this->m_gameStatus == GameStatus::Win)
-    {
-        return true;
-    }
-    return false;
+   if(this->m_status==GameStatus::Win || this->m_status==GameStatus::Loss)
+   {
+       return true;
+   }
+   return false;
+
 }
-
-
-Card* Mtmchkin::copyCardsArray(const Card* cardsArray, int numOfCards)
+GameStatus Mtmchkin::getGameStatus() const
 {
-    Card* cardsArr= new Card[numOfCards];
-    for (int i= INDEX_OF_FIRST_CARD; i<numOfCards; ++i)
-    {
-        cardsArr[i]= cardsArray[i];
-    }
-    return cardsArr;
+    return this->m_status;
 }
