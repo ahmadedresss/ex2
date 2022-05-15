@@ -7,6 +7,7 @@
 #include "Card.h"
 #include <iostream>
 
+static const int INDEX_OF_FIRST_CARD = 0;
 /*
  * GameStatus:
  * MidGame - The game is still active and the player continues to encounter cards.
@@ -29,11 +30,35 @@ public:
     */
     Mtmchkin(const char* playerName, const Card* cardsArray, int numOfCards);
 
-    Mtmchkin(const Mtmchkin& copy);
 
+    /*
+     * C'tor of Mtmchkin class:
+     * @param m - A reference of an existing Mtmchkin .
+     *
+     * @result
+     *      A coppied instance of Mtmchkin
+    */
+    Mtmchkin(const Mtmchkin& m);
+
+
+    /*
+     * D'tor of Mtmchkin class
+     *
+     * @return
+     *      Deletes this instance of Mtmchkin.
+    */
     ~Mtmchkin();
 
-    Mtmchkin& operator=(const Mtmchkin& copy);
+
+    /*
+     * Assignment operator
+     *
+     * @param p - The Mtmchkin to assign from.
+     * @return
+     *      default
+    */
+    Mtmchkin& operator=(Mtmchkin& p);
+
 
     /*
      * Play the next Card - according to the instruction in the exercise document
@@ -54,8 +79,6 @@ public:
     bool isOver() const;
 
 
-
-
     /*
      *  Get the status of the game:
      *
@@ -65,15 +88,25 @@ public:
     GameStatus getGameStatus() const;
 
 
-
 private:
-    //TODO: complete the Mtmchkin class.
-    const Card *cardsArray;
-    Card* m_temp;
-    int m_numOfCards;
-    GameStatus m_status;
-    int m_index;
+
+    GameStatus m_gameStatus;
+    int m_currentCard;
+    int m_amountOfCards;
     Player m_player;
+    Card* m_cardsArr;
+
+    /*
+     * Copy the cardsArray:
+     *
+     * @param cardsArray - A ptr to the cards deck.
+     * @param numOfCards - Num of cards in the deck.
+     *
+     * @return
+     *      A coppied array of the cardsArray.
+    */
+    Card* copyCardsArray(const Card* cardsArray, int numOfCards);
+
 };
 
 
