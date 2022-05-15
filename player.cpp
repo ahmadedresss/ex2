@@ -9,14 +9,29 @@ using std::endl;
 #define DE_HP 100
 
 
-Player::Player(const char* name ,int max_hp , int force)
+Player::Player(const char* name ,int max_hp , int force):m_name(name),m_level(DE_LEVEL)
+                                                        ,m_HP(max_hp),m_coins(0)
 {
+    /*
     m_name=name;
     m_maxHP=max_hp;
     m_force=force;
     m_level=DE_LEVEL;
-    m_HP=max_hp;
+    m_HP=m_maxHP;
     m_coins=0;
+     */
+    if(max_hp<0)
+    {
+        m_maxHP=m_HP=DE_HP;
+    }
+    else
+    {
+        m_maxHP=m_HP=max_hp;
+    }
+    if(force<0)
+        m_force=FORCE;
+    else
+        m_force=force;
 }
 
 void Player::printInfo ()const
@@ -30,7 +45,7 @@ void Player::levelUp()
     {
         return;
     }
-    m_level+=1;
+    m_level++;
 }
 
 int Player::getLevel()const
@@ -40,8 +55,9 @@ int Player::getLevel()const
 
 void Player::buff(int add_force)
 {
-    if(add_force<0)
+    if(add_force<=0)
     {
+        m_force=m_force+0;
         return;
     }
     m_force+=add_force;
@@ -53,17 +69,20 @@ void Player::heal(int add_hp)
     {
     return;
     }
-    m_HP+=add_hp;
-    if (m_HP > m_maxHP)
+    if (m_HP +add_hp>= m_maxHP)
     {
         m_HP=m_maxHP;
+        return;
     }
+    m_HP+=add_hp;
+
 }
 
 void Player::damage(int damage_par)
 {
     if(damage_par<=0)
     {
+        m_HP+=0;
         return;
     }
     if(m_HP<=damage_par)
@@ -95,6 +114,7 @@ void Player::addCoins(int addedCoins)
 {
     if(addedCoins<=0)
     {
+        m_coins+=0;
         return;
     }
     m_coins += addedCoins;
@@ -106,12 +126,14 @@ bool Player::pay(int coinsToPay)
     {
         if(m_coins - coinsToPay <0)
         {
+            m_coins+=0;
             return false;
         }
 
-            m_coins -= coinsToPay;
-            return true;
+        m_coins -= coinsToPay;
+        return true;
     }
+    m_coins+=0;
     return false;
 }
 
