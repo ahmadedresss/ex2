@@ -62,11 +62,13 @@ public:
     Card(const Card&) = default;
     ~Card() = default;
     Card& operator=(const Card& other) = default;
+   // bool check() const;
 
 
 private:
     CardType m_effect;
     CardStats m_stats;
+
 
 };
 
