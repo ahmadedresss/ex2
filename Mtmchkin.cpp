@@ -1,98 +1,94 @@
-#include "Card.h"
+#include "Mtmchkin.h"
 
-
-Card::Card(CardType type, const CardStats &stats)
+Mtmchkin::Mtmchkin(const char* playerName, const Card* cardsArray, int numOfCards) :
+        m_gameStatus(GameStatus::MidGame), m_currentCard(INDEX_OF_FIRST_CARD), m_amountOfCards(numOfCards),
+        m_player(playerName), m_cardsArr(copyCardsArray(cardsArray, numOfCards))
 {
-    this->m_effect=type;
-    this->m_stats = CardStats(stats);
+
 }
 
-void Card::applyEncounter(Player& player) const
+
+Mtmchkin::Mtmchkin(const Mtmchkin& m) : m_gameStatus(m.m_gameStatus), m_currentCard(m.m_currentCard),
+                                        m_amountOfCards(m.m_amountOfCards),m_player(m.m_player),
+                                        m_cardsArr(copyCardsArray(m.m_cardsArr, m.m_amountOfCards))
 {
-    //if(!check())
-    //    return;
-    if( m_effect == CardType::Battle)
-    {
-        int attack = player.getAttackStrength();
-        if (attack >= m_stats.force)
-        {
-            player.levelUp();
-            player.addCoins(m_stats.loot);
-            printBattleResult(true);
-            return;
-        }
-        else
-        {
-            player.damage(m_stats.hpLossOnDefeat);
-            printBattleResult(false);
-            return;
-        }
-    }
-    else if (m_effect == CardType::Heal)
-    {
-        if (player.pay(m_stats.cost))
-        {
-            player.heal(m_stats.heal);
-            return;
-        }
-    }
-    else if (m_effect == CardType::Buff)
-    {
-        if (player.pay(m_stats.cost))
-        {
-            player.buff(m_stats.buff);
-            return;
-        }
-    }
-    else if (m_effect == CardType::Treasure)
-    {
-        player.addCoins(m_stats.loot);
-        return;
-    }
+
 }
 
-void Card::printInfo() const
-{
-    if (m_effect == CardType::Battle)
-    {
-        printBattleCardInfo(m_stats);
-        return;
-    }
-    if (m_effect == CardType::Buff)
-    {
-        printBuffCardInfo(m_stats);
-        return;
-    }
-    if (m_effect == CardType::Heal)
-    {
-        printHealCardInfo(m_stats);
-        return;
-    }
-    if (m_effect == CardType::Treasure)
-    {
-        printTreasureCardInfo(m_stats);
-        return;
 
+Mtmchkin::~Mtmchkin()
+{
+    delete[] this->m_cardsArr;
+}
+
+
+Mtmchkin& Mtmchkin:: operator=(Mtmchkin &m)
+{
+    if (this == &m)
+    {
+        return *this;
+    }
+
+    delete[] this->m_cardsArr;
+    this->m_gameStatus = m.m_gameStatus;
+    this->m_currentCard = m.m_currentCard;
+    this->m_amountOfCards = m.m_amountOfCards;
+    this->m_player = m.m_player;
+    this->m_cardsArr= copyCardsArray(m.m_cardsArr, m.m_amountOfCards);
+    return *this;
+}
+
+
+GameStatus Mtmchkin::getGameStatus() const
+{
+    return this->m_gameStatus;
+}
+
+
+void Mtmchkin::playNextCard()
+{
+    if(this->m_gameStatus != GameStatus::MidGame)
+    {
+        return;
+    }
+    this->m_cardsArr[this->m_currentCard].printInfo();
+    this->m_cardsArr[this->m_currentCard].applyEncounter(this->m_player);
+    this->m_player.printInfo();
+    if(this->m_player.getLevel() == 10)
+    {
+        this->m_gameStatus= GameStatus::Win;
+    }
+    if(this->m_player.isKnockedOut())
+    {
+        this->m_gameStatus= GameStatus::Loss;
+    }
+    if(this->m_currentCard == this->m_amountOfCards -1)
+    {
+        this->m_currentCard= INDEX_OF_FIRST_CARD;
+    }
+    else
+    {
+        ++this->m_currentCard;
     }
 }
 
-/*
-bool Card::check() const
+
+bool Mtmchkin::isOver() const
 {
-    if(m_stats.cost<0)
-        return false;
-    if(m_stats.loot<0)
-        return false;
-    if(m_stats.hpLossOnDefeat<0)
-        return false;
-    if(m_stats.buff<0)
-        return false;
-    if(m_stats.force<0)
-        return false;
-    if(m_stats.heal<0)
-        return false;
-    return true;
-
-
+    if(this->m_gameStatus == GameStatus::Loss || this->m_gameStatus == GameStatus::Win)
+    {
+        return true;
+    }
+    return false;
 }
-*/
+
+
+Card* Mtmchkin::copyCardsArray(const Card* cardsArray, int numOfCards)
+{
+    Card* cardsArr= new Card[numOfCards];
+    for (int i= INDEX_OF_FIRST_CARD; i<numOfCards; ++i)
+    {
+        cardsArr[i]= cardsArray[i];
+    }
+    return cardsArr;
+}
