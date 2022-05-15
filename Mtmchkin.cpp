@@ -1,92 +1,98 @@
-
-#include "Player.h"
-#include "Mtmchkin.h"
-#include "utilities.h"
 #include "Card.h"
-#include <iostream>
-using std::cout;
-using std::endl;
 
-Mtmchkin::Mtmchkin(const char *playerName, const Card *cardsArray, int numOfCards):m_player(playerName)
+
+Card::Card(CardType type, const CardStats &stats)
 {
-    this->m_numOfCards=numOfCards;
-    this->m_status=GameStatus::MidGame;
-    this->m_index=0;
-     m_temp = new Card[numOfCards];
-    for (int i = 0; i < numOfCards; i++)
+    this->m_effect=type;
+    this->m_stats = CardStats(stats);
+}
+
+void Card::applyEncounter(Player& player) const
+{
+    //if(!check())
+    //    return;
+    if( m_effect == CardType::Battle)
     {
-        m_temp[i] = cardsArray[i];
+        int attack = player.getAttackStrength();
+        if (attack >= m_stats.force)
+        {
+            player.levelUp();
+            player.addCoins(m_stats.loot);
+            printBattleResult(true);
+            return;
+        }
+        else
+        {
+            player.damage(m_stats.hpLossOnDefeat);
+            printBattleResult(false);
+            return;
+        }
+    }
+    else if (m_effect == CardType::Heal)
+    {
+        if (player.pay(m_stats.cost))
+        {
+            player.heal(m_stats.heal);
+            return;
+        }
+    }
+    else if (m_effect == CardType::Buff)
+    {
+        if (player.pay(m_stats.cost))
+        {
+            player.buff(m_stats.buff);
+            return;
+        }
+    }
+    else if (m_effect == CardType::Treasure)
+    {
+        player.addCoins(m_stats.loot);
+        return;
     }
 }
 
-
-Mtmchkin& Mtmchkin::operator=(const Mtmchkin& copy)
+void Card::printInfo() const
 {
-    delete[] m_temp;
-    m_temp=new Card[copy.m_numOfCards];
-    for (int i = 0; i < copy.m_numOfCards; i++)
+    if (m_effect == CardType::Battle)
     {
-        m_temp[i] = cardsArray[i];
+        printBattleCardInfo(m_stats);
+        return;
     }
-    this->m_numOfCards=copy.m_numOfCards;
-    this->m_status=copy.m_status;
-    this->m_index=copy.m_index;
-    this->m_player=copy.m_player;
-    return*this;
-}
-
-Mtmchkin::Mtmchkin(const Mtmchkin& copy): m_player(copy.m_player)
-{
-    this->m_numOfCards=copy.m_numOfCards;
-    this->m_status=copy.m_status;
-    this->m_index=copy.m_index;
-    m_temp=new Card[copy.m_numOfCards];
-    for (int i = 0; i < copy.m_numOfCards; i++)
+    if (m_effect == CardType::Buff)
     {
-        m_temp[i] = cardsArray[i];
+        printBuffCardInfo(m_stats);
+        return;
+    }
+    if (m_effect == CardType::Heal)
+    {
+        printHealCardInfo(m_stats);
+        return;
+    }
+    if (m_effect == CardType::Treasure)
+    {
+        printTreasureCardInfo(m_stats);
+        return;
+
     }
 }
 
-
-Mtmchkin::~Mtmchkin()
+/*
+bool Card::check() const
 {
-    delete[] m_temp;
-}
+    if(m_stats.cost<0)
+        return false;
+    if(m_stats.loot<0)
+        return false;
+    if(m_stats.hpLossOnDefeat<0)
+        return false;
+    if(m_stats.buff<0)
+        return false;
+    if(m_stats.force<0)
+        return false;
+    if(m_stats.heal<0)
+        return false;
+    return true;
 
-void Mtmchkin::playNextCard()
-{
-    Card current_card=m_temp[m_index];
-    current_card.printInfo();
-    current_card.applyEncounter(m_player);
-
-
-    if(m_player.isKnockedOut())
-    {
-        this->m_status=GameStatus::Loss;
-    }
-    if(m_player.getLevel()==10)
-    {
-        this->m_status=GameStatus::Win;
-    }
-
-    m_player.printInfo();
-
-    if(++m_index == this->m_numOfCards)
-    {
-        m_index=0;
-    }
-   
-}
-bool Mtmchkin::isOver() const
-{
-   if(this->m_status==GameStatus::Win || this->m_status==GameStatus::Loss)
-   {
-       return true;
-   }
-   return false;
 
 }
-GameStatus Mtmchkin::getGameStatus() const
-{
-    return this->m_status;
-}
+*/
