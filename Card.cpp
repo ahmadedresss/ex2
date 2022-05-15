@@ -9,6 +9,8 @@ Card::Card(CardType type, const CardStats &stats)
 
 void Card::applyEncounter(Player& player) const
 {
+    //if(!check())
+    //    return;
     if( m_effect == CardType::Battle)
     {
         int attack = player.getAttackStrength();
@@ -26,7 +28,7 @@ void Card::applyEncounter(Player& player) const
             return;
         }
     }
-    if (m_effect == CardType::Heal)
+    else if (m_effect == CardType::Heal)
     {
         if (player.pay(m_stats.cost))
         {
@@ -34,7 +36,7 @@ void Card::applyEncounter(Player& player) const
             return;
         }
     }
-    if (m_effect == CardType::Buff)
+    else if (m_effect == CardType::Buff)
     {
         if (player.pay(m_stats.cost))
         {
@@ -42,7 +44,7 @@ void Card::applyEncounter(Player& player) const
             return;
         }
     }
-    if (m_effect == CardType::Treasure)
+    else if (m_effect == CardType::Treasure)
     {
         player.addCoins(m_stats.loot);
         return;
@@ -73,3 +75,24 @@ void Card::printInfo() const
 
     }
 }
+
+/*
+bool Card::check() const
+{
+    if(m_stats.cost<0)
+        return false;
+    if(m_stats.loot<0)
+        return false;
+    if(m_stats.hpLossOnDefeat<0)
+        return false;
+    if(m_stats.buff<0)
+        return false;
+    if(m_stats.force<0)
+        return false;
+    if(m_stats.heal<0)
+        return false;
+    return true;
+
+
+}
+*/
