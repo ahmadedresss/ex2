@@ -21,9 +21,13 @@ Player::Player(const char* name ,int max_hp , int force):m_name(name),m_level(DE
         m_maxHP=m_HP=max_hp;
     }
     if(force<=0)
+    {
         m_force=FORCE;
+    }
     else
+    {
         m_force=force;
+    }
 }
 
 void Player::printInfo ()const
@@ -81,10 +85,14 @@ void Player::damage(int damage_par)
 
     }
     else
+    {
         m_HP-=damage_par;
+    }
 
     if(m_HP<0)
+    {
         m_HP=0;
+    }
 
 }
 
@@ -128,4 +136,3 @@ int Player::getAttackStrength() const
 {
     return m_force + m_level;
 }
- 
