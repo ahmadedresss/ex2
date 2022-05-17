@@ -7,11 +7,8 @@
 using std::cout;
 using std::endl;
 
-Mtmchkin::Mtmchkin(const char *playerName, const Card *cardsArray, int numOfCards):m_player(playerName)
+Mtmchkin::Mtmchkin(const char *playerName, const Card *cardsArray, int numOfCards):m_player(playerName) ,m_numOfCards(numOfCards), m_status(GameStatus::MidGame),m_index(0)
 {
-    this->m_numOfCards=numOfCards;
-    this->m_status=GameStatus::MidGame;
-    this->m_index=0;
      m_temp = new Card[numOfCards];
     for (int i = 0; i < numOfCards; i++)
     {
@@ -35,11 +32,8 @@ Mtmchkin& Mtmchkin::operator=(const Mtmchkin& copy)
     return*this;
 }
 
-Mtmchkin::Mtmchkin(const Mtmchkin& copy): m_player(copy.m_player)
+Mtmchkin::Mtmchkin(const Mtmchkin& copy): m_player(copy.m_player): m_numOfCards(copy.m_numOfCards),m_status(copy.m_status), m_index(copy.m_index)
 {
-    this->m_numOfCards=copy.m_numOfCards;
-    this->m_status=copy.m_status;
-    this->m_index=copy.m_index;
     m_temp=new Card[copy.m_numOfCards];
     for (int i = 0; i < copy.m_numOfCards; i++)
     {
@@ -58,8 +52,7 @@ void Mtmchkin::playNextCard()
     Card current_card=m_temp[m_index];
     current_card.printInfo();
     current_card.applyEncounter(m_player);
-
-
+    
     if(m_player.isKnockedOut())
     {
         this->m_status=GameStatus::Loss;
